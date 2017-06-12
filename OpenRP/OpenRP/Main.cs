@@ -18,11 +18,13 @@ namespace OpenRP
 {
 	public class Main : BaseScript
 	{
+		public Blips blips
 		public Spawn spawn;
 		public Timer timer;
 
 		public Main()
 		{
+			blips = new Blips();
 			spawn = new Spawn();
 			timer = new Timer();
 			Tick += OnTick; //Exécuter à chaque Tick du jeu
@@ -30,6 +32,7 @@ namespace OpenRP
 			EventHandlers["onClientMapStart"] += new Action<dynamic>(async (dynamic res) => //Quand l'évènement "onClientMapStart" est lancée, on récupere une variable dynamique res
 			{
 				await spawn.Run(PedHash.MPros01); //Le script devra attendre d'avoir fini d'exécuter la fonction de spawn
+				blips.Spawn(); //On spawn les icônes sur la maps
 				Function.Call(Hash.NETWORK_SET_TALKER_PROXIMITY, 15.001); //On limite la parole des joueurs localement
 			});
 		}
