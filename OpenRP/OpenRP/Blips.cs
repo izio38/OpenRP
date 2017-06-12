@@ -18,10 +18,10 @@ namespace OpenRP
 				blip.Color = BlipColor.White; //La Couleur
 				blip.Scale = 1f; //La Taille
 				blip.IsShortRange = true; // On affiche l'icône, uniquement quand elle rentre dans la minimap
-				blip.Name = "Nom du Blips";
+				blip.Name = "Nom du Blip";
 			}
 		}
-		public static Vector3[] pos =
+		public static Vector3[] pos = // on indique les coords pour les blips XYZ
 		{
 			new Vector3(10f, 10f, 10f),
 			new Vector3(10f, 10f, 10f)
