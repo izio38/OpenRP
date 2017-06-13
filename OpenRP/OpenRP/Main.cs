@@ -18,13 +18,15 @@ namespace OpenRP
 {
 	public class Main : BaseScript
 	{
-		public Blips blips
+		public Blips blips;
+		public Marker marker;
 		public Spawn spawn;
 		public Timer timer;
 
 		public Main()
 		{
 			blips = new Blips();
+			marker = new Marker();
 			spawn = new Spawn();
 			timer = new Timer();
 			Tick += OnTick; //Exécuter à chaque Tick du jeu
@@ -40,6 +42,7 @@ namespace OpenRP
 		public async Task OnTick()
 		{
 			timer.Run(); //On lance les différents Timers
+			marker.OnTick(); //On affiche les markers
 		}
 	}
 }
