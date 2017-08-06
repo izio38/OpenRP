@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  Dim 06 août 2017 à 18:35
+-- Généré le :  Dim 06 août 2017 à 20:02
 -- Version du serveur :  10.0.30-MariaDB-0+deb8u2
 -- Version de PHP :  5.6.30-0+deb8u1
 
@@ -74,7 +74,23 @@ CREATE TABLE `user_data` (
   `user_id` int(11) NOT NULL,
   `user_name` varchar(32) NOT NULL,
   `user_updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `user_created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_money` int(11) NOT NULL,
+  `user_work` int(11) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `work_data`
+--
+
+CREATE TABLE `work_data` (
+  `work_id` int(11) NOT NULL,
+  `work_name` varchar(32) NOT NULL,
+  `work_faction` int(11) NOT NULL,
+  `work_salary` int(11) NOT NULL,
+  `work_chief` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -107,7 +123,15 @@ ALTER TABLE `log_transaction`
 -- Index pour la table `user_data`
 --
 ALTER TABLE `user_data`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`),
+  ADD KEY `id_work` (`user_work`);
+
+--
+-- Index pour la table `work_data`
+--
+ALTER TABLE `work_data`
+  ADD PRIMARY KEY (`work_id`),
+  ADD KEY `id_work_chief` (`work_chief`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -128,6 +152,11 @@ ALTER TABLE `log_transaction`
 --
 ALTER TABLE `user_data`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `work_data`
+--
+ALTER TABLE `work_data`
+  MODIFY `work_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Contraintes pour les tables déchargées
 --
@@ -150,6 +179,18 @@ ALTER TABLE `log_name`
 ALTER TABLE `log_transaction`
   ADD CONSTRAINT `id_log_transaction_receiver` FOREIGN KEY (`user_receiver`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `id_log_transaction_sender` FOREIGN KEY (`user_sender`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `user_data`
+--
+ALTER TABLE `user_data`
+  ADD CONSTRAINT `id_work` FOREIGN KEY (`user_work`) REFERENCES `work_data` (`work_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `work_data`
+--
+ALTER TABLE `work_data`
+  ADD CONSTRAINT `id_work_chief` FOREIGN KEY (`work_chief`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
