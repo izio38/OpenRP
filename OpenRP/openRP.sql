@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  Dim 06 août 2017 à 20:02
+-- Généré le :  Dim 06 août 2017 à 23:32
 -- Version du serveur :  10.0.30-MariaDB-0+deb8u2
 -- Version de PHP :  5.6.30-0+deb8u1
 
@@ -67,6 +67,20 @@ CREATE TABLE `log_transaction` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `log_work`
+--
+
+CREATE TABLE `log_work` (
+  `log_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `work_old` int(11) NOT NULL,
+  `work_new` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `user_data`
 --
 
@@ -120,6 +134,14 @@ ALTER TABLE `log_transaction`
   ADD KEY `id_log_transaction_receiver` (`user_receiver`);
 
 --
+-- Index pour la table `log_work`
+--
+ALTER TABLE `log_work`
+  ADD PRIMARY KEY (`log_id`),
+  ADD KEY `id_log_work_new` (`work_new`),
+  ADD KEY `id_log_work` (`work_old`);
+
+--
 -- Index pour la table `user_data`
 --
 ALTER TABLE `user_data`
@@ -146,6 +168,11 @@ ALTER TABLE `log_name`
 -- AUTO_INCREMENT pour la table `log_transaction`
 --
 ALTER TABLE `log_transaction`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `log_work`
+--
+ALTER TABLE `log_work`
   MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT pour la table `user_data`
@@ -179,6 +206,14 @@ ALTER TABLE `log_name`
 ALTER TABLE `log_transaction`
   ADD CONSTRAINT `id_log_transaction_receiver` FOREIGN KEY (`user_receiver`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `id_log_transaction_sender` FOREIGN KEY (`user_sender`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `log_work`
+--
+ALTER TABLE `log_work`
+  ADD CONSTRAINT `id_log_work` FOREIGN KEY (`work_old`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `id_log_work_new` FOREIGN KEY (`work_new`) REFERENCES `work_data` (`work_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `id_log_work_old` FOREIGN KEY (`work_old`) REFERENCES `work_data` (`work_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `user_data`
