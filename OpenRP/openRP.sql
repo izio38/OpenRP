@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  Dim 06 août 2017 à 23:32
+-- Généré le :  lun. 07 août 2017 à 00:14
 -- Version du serveur :  10.0.30-MariaDB-0+deb8u2
 -- Version de PHP :  5.6.30-0+deb8u1
 
@@ -103,8 +103,33 @@ CREATE TABLE `work_data` (
   `work_id` int(11) NOT NULL,
   `work_name` varchar(32) NOT NULL,
   `work_faction` int(11) NOT NULL,
+  `work_rank` int(11) NOT NULL,
   `work_salary` int(11) NOT NULL,
-  `work_chief` int(11) NOT NULL
+  `work_chief` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `work_faction`
+--
+
+CREATE TABLE `work_faction` (
+  `faction_id` int(11) NOT NULL,
+  `faction_name` varchar(32) NOT NULL,
+  `faction_gov` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `work_rank`
+--
+
+CREATE TABLE `work_rank` (
+  `faction_id` int(11) NOT NULL,
+  `rank_id` int(11) NOT NULL,
+  `rank_name` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -153,7 +178,20 @@ ALTER TABLE `user_data`
 --
 ALTER TABLE `work_data`
   ADD PRIMARY KEY (`work_id`),
-  ADD KEY `id_work_chief` (`work_chief`);
+  ADD KEY `id_work_rank` (`work_rank`),
+  ADD KEY `id_work_faction` (`work_faction`);
+
+--
+-- Index pour la table `work_faction`
+--
+ALTER TABLE `work_faction`
+  ADD PRIMARY KEY (`faction_id`);
+
+--
+-- Index pour la table `work_rank`
+--
+ALTER TABLE `work_rank`
+  ADD PRIMARY KEY (`rank_id`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -178,12 +216,22 @@ ALTER TABLE `log_work`
 -- AUTO_INCREMENT pour la table `user_data`
 --
 ALTER TABLE `user_data`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT pour la table `work_data`
 --
 ALTER TABLE `work_data`
   MODIFY `work_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `work_faction`
+--
+ALTER TABLE `work_faction`
+  MODIFY `faction_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `work_rank`
+--
+ALTER TABLE `work_rank`
+  MODIFY `rank_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Contraintes pour les tables déchargées
 --
@@ -225,7 +273,8 @@ ALTER TABLE `user_data`
 -- Contraintes pour la table `work_data`
 --
 ALTER TABLE `work_data`
-  ADD CONSTRAINT `id_work_chief` FOREIGN KEY (`work_chief`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `id_work_faction` FOREIGN KEY (`work_faction`) REFERENCES `work_faction` (`faction_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `id_work_rank` FOREIGN KEY (`work_rank`) REFERENCES `work_rank` (`rank_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
