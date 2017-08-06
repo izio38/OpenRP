@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  jeu. 03 août 2017 à 14:50
+-- Généré le :  Dim 06 août 2017 à 18:23
 -- Version du serveur :  10.0.30-MariaDB-0+deb8u2
 -- Version de PHP :  5.6.30-0+deb8u1
 
@@ -29,10 +29,25 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `log_chat` (
+  `log_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `text` text NOT NULL,
   `server` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `log_name`
+--
+
+CREATE TABLE `log_name` (
+  `log_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `user_name` varchar(32) NOT NULL,
+  `reason` varchar(64) NOT NULL,
+  `used_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -56,7 +71,15 @@ CREATE TABLE `user_data` (
 -- Index pour la table `log_chat`
 --
 ALTER TABLE `log_chat`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`log_id`),
+  ADD KEY `user_1` (`user_id`) USING BTREE;
+
+--
+-- Index pour la table `log_name`
+--
+ALTER TABLE `log_name`
+  ADD PRIMARY KEY (`log_id`),
+  ADD KEY `user_2` (`user_id`);
 
 --
 -- Index pour la table `user_data`
@@ -68,6 +91,11 @@ ALTER TABLE `user_data`
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
+--
+-- AUTO_INCREMENT pour la table `log_name`
+--
+ALTER TABLE `log_name`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT pour la table `user_data`
 --
@@ -82,6 +110,12 @@ ALTER TABLE `user_data`
 --
 ALTER TABLE `log_chat`
   ADD CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `log_name`
+--
+ALTER TABLE `log_name`
+  ADD CONSTRAINT `user_2` FOREIGN KEY (`user_id`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
