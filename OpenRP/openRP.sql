@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  Dim 06 août 2017 à 18:23
+-- Généré le :  Dim 06 août 2017 à 18:35
 -- Version du serveur :  10.0.30-MariaDB-0+deb8u2
 -- Version de PHP :  5.6.30-0+deb8u1
 
@@ -53,6 +53,20 @@ CREATE TABLE `log_name` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `log_transaction`
+--
+
+CREATE TABLE `log_transaction` (
+  `log_id` int(11) NOT NULL,
+  `user_sender` int(11) NOT NULL,
+  `user_receiver` int(11) NOT NULL,
+  `amout` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `user_data`
 --
 
@@ -72,14 +86,22 @@ CREATE TABLE `user_data` (
 --
 ALTER TABLE `log_chat`
   ADD PRIMARY KEY (`log_id`),
-  ADD KEY `user_1` (`user_id`) USING BTREE;
+  ADD KEY `id_log_chat` (`user_id`) USING BTREE;
 
 --
 -- Index pour la table `log_name`
 --
 ALTER TABLE `log_name`
   ADD PRIMARY KEY (`log_id`),
-  ADD KEY `user_2` (`user_id`);
+  ADD KEY `id_log_name` (`user_id`) USING BTREE;
+
+--
+-- Index pour la table `log_transaction`
+--
+ALTER TABLE `log_transaction`
+  ADD PRIMARY KEY (`log_id`),
+  ADD KEY `id_log_transaction_sender` (`user_sender`),
+  ADD KEY `id_log_transaction_receiver` (`user_receiver`);
 
 --
 -- Index pour la table `user_data`
@@ -95,6 +117,11 @@ ALTER TABLE `user_data`
 -- AUTO_INCREMENT pour la table `log_name`
 --
 ALTER TABLE `log_name`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `log_transaction`
+--
+ALTER TABLE `log_transaction`
   MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT pour la table `user_data`
@@ -116,6 +143,13 @@ ALTER TABLE `log_chat`
 --
 ALTER TABLE `log_name`
   ADD CONSTRAINT `user_2` FOREIGN KEY (`user_id`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `log_transaction`
+--
+ALTER TABLE `log_transaction`
+  ADD CONSTRAINT `id_log_transaction_receiver` FOREIGN KEY (`user_receiver`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `id_log_transaction_sender` FOREIGN KEY (`user_sender`) REFERENCES `user_data` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
