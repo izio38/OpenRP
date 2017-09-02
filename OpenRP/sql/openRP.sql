@@ -85,12 +85,24 @@ CREATE TABLE `log_work` (
 --
 
 CREATE TABLE `user_data` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_identifier` varchar(48) NOT NULL,
   `user_name` varchar(32) NOT NULL,
   `user_updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_money` int(11) NOT NULL,
+  `user_bank_money` int(11) NOT NULL,
   `user_work` int(11) NOT NULL DEFAULT '1',
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `user_whitelist`
+--
+
+CREATE TABLE `user_whitelist` (
+  `user_identifier` varchar(48) NOT NULL,
   `user_whitelisted` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

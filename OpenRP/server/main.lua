@@ -1,4 +1,4 @@
-local connectedUsers = {}
+ConnectedUsers = {}
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
     local source = source
@@ -23,8 +23,43 @@ AddEventHandler('playerConnecting', function(playerName, setKickReason)
     	end
     end
 
+    LoadUser(source)
     -- On load l'utilisateur ici, on a passé les deux vérifs (si elles sont parametrées.)
 end)
+
+-- AddEventHandler('') OnPlayerDrop TODO
+
+function LoadUser(source)
+	local identifier = GetPlayerIdentifiers(source)[1]
+	MySQL.Async.fetchAll("SELECT * FROM user_data WHERE user_identifier = @identifier",
+	{
+		["@identifier"] = identifier
+	}, function(user)
+		local source = source
+		local identifier = identifier
+		if user then
+			ConnectedUsers[source] = CreateUserObject(source, identifier)
+		else
+			RegisterNewUser(source, identifier)
+		end
+	end)
+end
+
+function RegisterNewUser(source, identifier)
+	MySQL.Async.execute("INSERT INTO user_data (user_identifier, user_name, user_money, user_bank_money, user_work) VALUES (@identifier, @playerName, @money, @bankMoney, @job)",
+	{
+		["@identifier"] = identifier,
+		["@playerName"] = GetPlayerName(source),
+		["@money"] = OpenRp.firstUserDatas.money,
+		["@bankMoney"] = OpenRp.firstUserDatas.bankMoney,
+		["@job"] = OpenRp.firstUserDatas.job
+	}, function()
+		local source = source
+		local identifier = identifier
+
+		FetchUserObject(source, identifier)
+	end)
+end
 
 function IsUserUsingSteam(identifier)
 	local resultSplited = StringSplit(identifier)
@@ -37,11 +72,11 @@ function IsUserUsingSteam(identifier)
 end
 
 function IsUserWhiteListed(identifier)
-	local result = MySQL.Sync.fetchAll("SELECT * FROM user_data WHERE user_id = @identifier", -- On attend la PR de Brouznouf pour faire des Cb en Async auprès d'une fonction.
+	local result = MySQL.Sync.fetchAll("SELECT * FROM user_whitelist WHERE user_identifier = @identifier", -- On attend la PR de Brouznouf pour faire des Cb en Async auprès d'une fonction.
 		{
 			["@identifier"] = identifier
 		})
-	if result[1].user_id and result[1].user_whitelisted then
+	if result[1].user_identifier and result[1].user_whitelisted then
 		return true
 	else
 		return false
