@@ -1,3 +1,4 @@
+i18n.setLang(OpenRp.Config["Lang"])
 local connectedUsers = {}
 
 AddEventHandler('playerConnecting', function(playerName, setKickReason)
@@ -8,7 +9,7 @@ AddEventHandler('playerConnecting', function(playerName, setKickReason)
     	local isUsingSteam = IsUserUsingSteam(GetPlayerIdentifiers(source)[1])
 
     	if not(isUsingSteam) then
-    		setKickReason(OpenRp.Message["SteamMustBeLaunchedMessage"])
+    		setKickReason(i18n.translate("SteamMustBeLaunched"))
         	CancelEvent()
     	end
     end
@@ -18,7 +19,7 @@ AddEventHandler('playerConnecting', function(playerName, setKickReason)
     	local isWhiteListed = IsUserWhiteListed(GetPlayerIdentifiers(source)[1])
 
     	if not(isWhiteListed) then
-    		setKickReason(OpenRp.Message["NeedToBeWhiteLitedMessage"])
+    		setKickReason(i18n.translate("NeedToBeWhiteLited"))
         	CancelEvent()
     	end
     end
