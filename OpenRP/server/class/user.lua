@@ -11,14 +11,15 @@ end
 local function CreateUserObject(source, user)
 	local self = {
 		id = user.user_id,
-		identifier = user.user_identifier
-		name = user.user_name
+		identifier = user.user_identifier,
+		name = user.user_name,
 		firstConnectionAt = user.user_created_at,
 		lastConnectionAt = user.user_updated_at,
-		money = user.user_money
+		money = user.user_money,
 		bankMoney = user.user_bank_money,
-		job = user.user_work
-		haveChanged = false
+		job = user.user_work,
+		haveChanged = 0,
+		sessionVar = {}
 	}
 
 	local Methods = {
@@ -35,11 +36,23 @@ local function CreateUserObject(source, user)
 		set = function(key, value)
 			if self[key] then
 				self[key] = value
-				self.haveChanged = true
+				self.haveChanged = 1
 			else
 				print("Pas de clef ayant pour index : " .. tostring(key))
 				return nil
 			end
+		end,
+
+		getSessionVar = function(key)
+			if self.session[key] then
+				return self.session[key]
+			else
+				return nil
+			end
+		end,
+
+		setSessionVar = function(key, value)
+			self.session[key] = value
 		end,
 
 	-- Money setter:
@@ -52,7 +65,7 @@ local function CreateUserObject(source, user)
 			end
 
 			self.money = self.money + value
-			self.haveChanged = true
+			self.haveChanged = 1
 
 			-- TriggerClientEvent("OP:addMoney", self.source, self.money) TODO
 			
@@ -69,7 +82,7 @@ local function CreateUserObject(source, user)
 			end
 
 			self.money = self.money - value
-			self.haveChanged = true
+			self.haveChanged = 1
 			-- TriggerClientEvent("OP:removeMoney", self.source, self.money) TODO
 			return true
 		end
@@ -89,7 +102,7 @@ local function CreateUserObject(source, user)
 			end
 
 			self.money = value
-			self.haveChanged = true
+			self.haveChanged = 1
 			return true
 		end
 	}

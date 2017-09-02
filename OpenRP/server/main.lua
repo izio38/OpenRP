@@ -28,7 +28,17 @@ AddEventHandler('playerConnecting', function(playerName, setKickReason)
     -- On load l'utilisateur ici, on a passé les deux vérifs (si elles sont parametrées.)
 end)
 
--- AddEventHandler('') OnPlayerDrop TODO
+AddEventHandler('playerDropped', function()
+    local source = source
+    if ConnectedUsers[source] then
+    	ConnectedUsers[source].setSessionVar('userInTransition', true)
+    	TriggerEvent("ORP:playerDisconnected", ConnectedUsers[source])
+    	SetTimeout(10000, function() -- on laisse 10 secondes pour laisser les resources traiter des donnèes.
+    		DebugMessage("L'utilisateur: " .. ConnectedUsers[source].get('name') .. " identifié par: " .. ConnectedUsers[source].get('identifier') .. " vient de se déconnecter.")
+    		ConnectedUsers[source] = nil
+    	end)
+    end
+end)
 
 function LoadUser(source)
 	local identifier = GetPlayerIdentifiers(source)[1]
@@ -81,6 +91,37 @@ function IsUserWhiteListed(identifier)
 		return true
 	else
 		return false
+	end
+end
+
+-- Sauvegarde:
+Citizen.CreateThread(function()
+	while true do
+		Wait(OpenRp.Config["SavingTime"])
+
+		TriggerEvent("ORP:getPlayers", function(Users)
+
+			for k, v in pairs(Users) do
+
+				if v.get('haveChanged') == 1 then
+					MySQL.Async.execute("UPDATE user_data SET user_money = @money, user_bank_money = @bank, user_work = @job WHERE user_id = @id",
+					{
+						["@money"] = v.get('money'),
+						["@bank"] = v.get('bankMoney'),
+						["@job"] = v.get('job'),
+						["@id"] = v.get('id')
+					})
+					DebugMessage("Un utilisateur sauvegardé!")
+				end
+			end
+		end)
+	end
+end)
+
+-- Fonctions utilitaires:
+function DebugMessage(message)
+	if OpenRp.Config["DebugMsg"] == 1 then
+		print(message)
 	end
 end
 
