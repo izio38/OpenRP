@@ -90,7 +90,8 @@ CREATE TABLE `user_data` (
   `user_updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_money` int(11) NOT NULL,
-  `user_work` int(11) NOT NULL DEFAULT '1'
+  `user_work` int(11) NOT NULL DEFAULT '1',
+  `user_whitelisted` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
